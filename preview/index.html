@@ -1,0 +1,887 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Nexus HR AI — Plataforma Completa</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+    * { font-family: 'Inter', sans-serif; }
+    .sidebar-item:hover { background: rgba(255,255,255,0.08); }
+    .sidebar-item.active { background: rgba(59,130,246,0.3); border-right: 3px solid #3b82f6; }
+    .card-hover:hover { transform: translateY(-2px); box-shadow: 0 12px 40px rgba(0,0,0,0.12); }
+    .gradient-bg { background: linear-gradient(135deg, #1e3a5f 0%, #0f172a 100%); }
+    .glass { background: rgba(255,255,255,0.05); backdrop-filter: blur(10px); }
+    .pulse-dot { animation: pulse 2s infinite; }
+    @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: #f1f5f9; }
+    ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 3px; }
+    .chat-bubble { animation: slideUp 0.3s ease-out; }
+    @keyframes slideUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+    .tab-active { border-bottom: 2px solid #3b82f6; color: #1e40af; font-weight: 600; }
+  </style>
+</head>
+<body class="bg-gray-100">
+  <div id="app" class="flex h-screen overflow-hidden">
+
+    <!-- SIDEBAR -->
+    <aside id="sidebar" class="w-64 gradient-bg text-white flex flex-col transition-all duration-300">
+      <div class="p-5 border-b border-white/10">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 bg-blue-500 rounded-xl flex items-center justify-center font-bold text-lg">N</div>
+          <div>
+            <h1 class="text-lg font-bold tracking-tight">Nexus HR AI</h1>
+            <p class="text-xs text-blue-300">Copiloto Inteligente de RH</p>
+          </div>
+        </div>
+      </div>
+
+      <nav class="flex-1 py-4 overflow-y-auto">
+        <div class="px-4 mb-2 text-xs font-semibold text-blue-300 uppercase tracking-wider">Principal</div>
+        <button onclick="showPage('dashboard')" class="sidebar-item active w-full flex items-center gap-3 px-5 py-3 text-sm text-gray-300 hover:text-white transition" data-page="dashboard">
+          <span class="text-lg">📊</span> Dashboard
+        </button>
+        <button onclick="showPage('employees')" class="sidebar-item w-full flex items-center gap-3 px-5 py-3 text-sm text-gray-300 hover:text-white transition" data-page="employees">
+          <span class="text-lg">👥</span> Colaboradores
+        </button>
+        <button onclick="showPage('intelligence')" class="sidebar-item w-full flex items-center gap-3 px-5 py-3 text-sm text-gray-300 hover:text-white transition" data-page="intelligence">
+          <span class="text-lg">🧠</span> Perfil Inteligente
+        </button>
+        <button onclick="showPage('analytics')" class="sidebar-item w-full flex items-center gap-3 px-5 py-3 text-sm text-gray-300 hover:text-white transition" data-page="analytics">
+          <span class="text-lg">📈</span> Analytics
+        </button>
+
+        <div class="px-4 mt-6 mb-2 text-xs font-semibold text-blue-300 uppercase tracking-wider">Inteligência Artificial</div>
+        <button onclick="showPage('ai-assistant')" class="sidebar-item w-full flex items-center gap-3 px-5 py-3 text-sm text-gray-300 hover:text-white transition" data-page="ai-assistant">
+          <span class="text-lg">🤖</span> Assistente IA
+        </button>
+        <button onclick="showPage('agents')" class="sidebar-item w-full flex items-center gap-3 px-5 py-3 text-sm text-gray-300 hover:text-white transition" data-page="agents">
+          <span class="text-lg">⚡</span> Agentes IA
+        </button>
+        <button onclick="showPage('knowledge')" class="sidebar-item w-full flex items-center gap-3 px-5 py-3 text-sm text-gray-300 hover:text-white transition" data-page="knowledge">
+          <span class="text-lg">📚</span> Knowledge Base
+        </button>
+
+        <div class="px-4 mt-6 mb-2 text-xs font-semibold text-blue-300 uppercase tracking-wider">Gestão</div>
+        <button onclick="showPage('reports')" class="sidebar-item w-full flex items-center gap-3 px-5 py-3 text-sm text-gray-300 hover:text-white transition" data-page="reports">
+          <span class="text-lg">📋</span> Relatórios
+        </button>
+        <button onclick="showPage('climate')" class="sidebar-item w-full flex items-center gap-3 px-5 py-3 text-sm text-gray-300 hover:text-white transition" data-page="climate">
+          <span class="text-lg">🌡️</span> Clima
+        </button>
+        <button onclick="showPage('talent')" class="sidebar-item w-full flex items-center gap-3 px-5 py-3 text-sm text-gray-300 hover:text-white transition" data-page="talent">
+          <span class="text-lg">⭐</span> Talentos
+        </button>
+
+        <div class="px-4 mt-6 mb-2 text-xs font-semibold text-blue-300 uppercase tracking-wider">Sistema</div>
+        <button onclick="showPage('settings')" class="sidebar-item w-full flex items-center gap-3 px-5 py-3 text-sm text-gray-300 hover:text-white transition" data-page="settings">
+          <span class="text-lg">⚙️</span> Configurações
+        </button>
+      </nav>
+
+      <div class="p-4 border-t border-white/10">
+        <div class="flex items-center gap-3">
+          <div class="w-9 h-9 bg-blue-600 rounded-full flex items-center justify-center text-sm font-semibold">RA</div>
+          <div class="flex-1 min-w-0">
+            <p class="text-sm font-medium truncate">Renat Admin</p>
+            <p class="text-xs text-blue-300 truncate">admin@nexushr.com</p>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <!-- MAIN CONTENT -->
+    <div class="flex-1 flex flex-col overflow-hidden">
+
+      <!-- HEADER -->
+      <header class="bg-white border-b px-6 py-4 flex items-center justify-between shadow-sm">
+        <div>
+          <h2 id="page-title" class="text-xl font-bold text-gray-800">Dashboard Executivo</h2>
+          <p id="page-subtitle" class="text-sm text-gray-500">Visão geral de People Analytics</p>
+        </div>
+        <div class="flex items-center gap-4">
+          <div class="relative">
+            <input type="text" placeholder="Buscar..." class="pl-10 pr-4 py-2 border border-gray-200 rounded-lg text-sm w-64 focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+            <span class="absolute left-3 top-2.5 text-gray-400">🔍</span>
+          </div>
+          <button class="relative p-2 text-gray-500 hover:text-gray-700">
+            <span class="text-xl">🔔</span>
+            <span class="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full pulse-dot"></span>
+          </button>
+          <div class="bg-green-100 text-green-800 px-3 py-1 rounded-full text-xs font-semibold flex items-center gap-1">
+            <span class="w-2 h-2 bg-green-500 rounded-full"></span> Online
+          </div>
+        </div>
+      </header>
+
+      <!-- PAGES -->
+      <main class="flex-1 overflow-y-auto p-6" id="main-content">
+
+        <!-- ===== DASHBOARD ===== -->
+        <div id="page-dashboard" class="page-content">
+          <!-- KPI Cards -->
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5 mb-6">
+            <div class="bg-white rounded-xl p-5 shadow-sm border border-gray-100 card-hover transition-all">
+              <div class="flex items-center justify-between mb-3">
+                <span class="text-sm font-medium text-gray-500">Total Colaboradores</span>
+                <span class="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center text-blue-600 text-lg">👥</span>
+              </div>
+              <p class="text-3xl font-bold text-gray-800">247</p>
+              <p class="text-xs text-green-600 mt-1 flex items-center gap-1"><span>↑</span> 12% vs mês anterior</p>
+            </div>
+            <div class="bg-white rounded-xl p-5 shadow-sm border border-gray-100 card-hover transition-all">
+              <div class="flex items-center justify-between mb-3">
+                <span class="text-sm font-medium text-gray-500">Turnover</span>
+                <span class="w-10 h-10 bg-red-100 rounded-lg flex items-center justify-center text-red-600 text-lg">📉</span>
+              </div>
+              <p class="text-3xl font-bold text-gray-800">8.3%</p>
+              <p class="text-xs text-green-600 mt-1 flex items-center gap-1"><span>↓</span> 2.1% vs mês anterior</p>
+            </div>
+            <div class="bg-white rounded-xl p-5 shadow-sm border border-gray-100 card-hover transition-all">
+              <div class="flex items-center justify-between mb-3">
+                <span class="text-sm font-medium text-gray-500">Engajamento</span>
+                <span class="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center text-green-600 text-lg">💚</span>
+              </div>
+              <p class="text-3xl font-bold text-gray-800">82%</p>
+              <p class="text-xs text-green-600 mt-1 flex items-center gap-1"><span>↑</span> 5% vs trimestre anterior</p>
+            </div>
+            <div class="bg-white rounded-xl p-5 shadow-sm border border-gray-100 card-hover transition-all">
+              <div class="flex items-center justify-between mb-3">
+                <span class="text-sm font-medium text-gray-500">Performance Média</span>
+                <span class="w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center text-purple-600 text-lg">⭐</span>
+              </div>
+              <p class="text-3xl font-bold text-gray-800">4.2</p>
+              <p class="text-xs text-green-600 mt-1 flex items-center gap-1"><span>↑</span> 0.3 vs semestre anterior</p>
+            </div>
+          </div>
+
+          <!-- Charts Row -->
+          <div class="grid grid-cols-1 lg:grid-cols-3 gap-5 mb-6">
+            <div class="lg:col-span-2 bg-white rounded-xl p-6 shadow-sm border border-gray-100">
+              <h3 class="font-semibold text-gray-800 mb-4">Evolução de Headcount</h3>
+              <canvas id="headcountChart" height="100"></canvas>
+            </div>
+            <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
+              <h3 class="font-semibold text-gray-800 mb-4">Distribuição por Depto.</h3>
+              <canvas id="deptChart" height="180"></canvas>
+            </div>
+          </div>
+
+          <!-- Talentos Críticos + IA Insights -->
+          <div class="grid grid-cols-1 lg:grid-cols-2 gap-5">
+            <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
+              <h3 class="font-semibold text-gray-800 mb-4">Talentos Críticos</h3>
+              <div class="space-y-3">
+                <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                  <div class="flex items-center gap-3">
+                    <div class="w-9 h-9 bg-blue-500 rounded-full flex items-center justify-center text-white text-sm font-semibold">MS</div>
+                    <div>
+                      <p class="text-sm font-medium">Maria Silva</p>
+                      <p class="text-xs text-gray-500">Tech Lead • Engenharia</p>
+                    </div>
+                  </div>
+                  <span class="bg-green-100 text-green-800 text-xs px-2 py-1 rounded-full font-medium">Alto Potencial</span>
+                </div>
+                <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                  <div class="flex items-center gap-3">
+                    <div class="w-9 h-9 bg-purple-500 rounded-full flex items-center justify-center text-white text-sm font-semibold">JS</div>
+                    <div>
+                      <p class="text-sm font-medium">João Santos</p>
+                      <p class="text-xs text-gray-500">Gerente • Comercial</p>
+                    </div>
+                  </div>
+                  <span class="bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded-full font-medium">Líder Nato</span>
+                </div>
+                <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                  <div class="flex items-center gap-3">
+                    <div class="w-9 h-9 bg-orange-500 rounded-full flex items-center justify-center text-white text-sm font-semibold">AC</div>
+                    <div>
+                      <p class="text-sm font-medium">Ana Costa</p>
+                      <p class="text-xs text-gray-500">Analista Sr. • Marketing</p>
+                    </div>
+                  </div>
+                  <span class="bg-yellow-100 text-yellow-800 text-xs px-2 py-1 rounded-full font-medium">Próxima Liderança</span>
+                </div>
+              </div>
+            </div>
+            <div class="bg-gradient-to-br from-blue-600 to-indigo-700 rounded-xl p-6 text-white">
+              <h3 class="font-semibold mb-4 flex items-center gap-2">🤖 Insights da IA</h3>
+              <div class="space-y-3">
+                <div class="glass rounded-lg p-4">
+                  <p class="text-sm text-blue-100">⚠️ <strong>Risco de Retenção:</strong> 3 colaboradores do time de Engenharia podem sair nos próximos 90 dias baseado em padrões de engajamento.</p>
+                </div>
+                <div class="glass rounded-lg p-4">
+                  <p class="text-sm text-blue-100">📈 <strong>Oportunidade:</strong> Ana Costa demonstra potencial para promoção baseado em 4 avaliações consecutivas com nota superior a 4.5.</p>
+                </div>
+                <div class="glass rounded-lg p-4">
+                  <p class="text-sm text-blue-100">🎯 <strong>Ação Recomendada:</strong> Aumentar participação em treinamentos do departamento de Vendas em 30% para melhorar KPIs de performance.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ===== COLABORADORES ===== -->
+        <div id="page-employees" class="page-content hidden">
+          <div class="bg-white rounded-xl shadow-sm border border-gray-100">
+            <div class="p-6 border-b flex items-center justify-between">
+              <div>
+                <h3 class="font-semibold text-gray-800">Gestão de Colaboradores</h3>
+                <p class="text-sm text-gray-500">247 colaboradores cadastrados</p>
+              </div>
+              <button class="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-blue-700 transition">+ Novo Colaborador</button>
+            </div>
+            <div class="p-6">
+              <div class="flex gap-4 mb-4">
+                <input type="text" placeholder="Buscar por nome, cargo ou departamento..." class="flex-1 px-4 py-2 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-blue-500">
+                <select class="px-4 py-2 border border-gray-200 rounded-lg text-sm">
+                  <option>Todos os Departamentos</option>
+                  <option>Engenharia</option>
+                  <option>Comercial</option>
+                  <option>Marketing</option>
+                  <option>RH</option>
+                  <option>Financeiro</option>
+                </select>
+                <select class="px-4 py-2 border border-gray-200 rounded-lg text-sm">
+                  <option>Todos os Status</option>
+                  <option>Ativo</option>
+                  <option>Afastado</option>
+                  <option>Desligado</option>
+                </select>
+              </div>
+              <table class="w-full">
+                <thead>
+                  <tr class="text-left text-xs font-semibold text-gray-500 uppercase border-b">
+                    <th class="pb-3">Colaborador</th>
+                    <th class="pb-3">Cargo</th>
+                    <th class="pb-3">Departamento</th>
+                    <th class="pb-3">Admissão</th>
+                    <th class="pb-3">Performance</th>
+                    <th class="pb-3">Status</th>
+                    <th class="pb-3">Ações</th>
+                  </tr>
+                </thead>
+                <tbody class="divide-y divide-gray-100">
+                  <tr class="hover:bg-gray-50">
+                    <td class="py-3"><div class="flex items-center gap-3"><div class="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center text-white text-xs font-semibold">MS</div><div><p class="text-sm font-medium">Maria Silva</p><p class="text-xs text-gray-500">maria@empresa.com</p></div></div></td>
+                    <td class="py-3 text-sm">Tech Lead</td>
+                    <td class="py-3 text-sm">Engenharia</td>
+                    <td class="py-3 text-sm text-gray-500">15/03/2020</td>
+                    <td class="py-3"><span class="bg-green-100 text-green-800 text-xs px-2 py-1 rounded-full">4.8</span></td>
+                    <td class="py-3"><span class="bg-green-100 text-green-800 text-xs px-2 py-1 rounded-full font-medium">Ativo</span></td>
+                    <td class="py-3"><button class="text-blue-600 hover:text-blue-800 text-sm">Ver Perfil</button></td>
+                  </tr>
+                  <tr class="hover:bg-gray-50">
+                    <td class="py-3"><div class="flex items-center gap-3"><div class="w-8 h-8 bg-purple-500 rounded-full flex items-center justify-center text-white text-xs font-semibold">JS</div><div><p class="text-sm font-medium">João Santos</p><p class="text-xs text-gray-500">joao@empresa.com</p></div></div></td>
+                    <td class="py-3 text-sm">Gerente Comercial</td>
+                    <td class="py-3 text-sm">Comercial</td>
+                    <td class="py-3 text-sm text-gray-500">01/08/2019</td>
+                    <td class="py-3"><span class="bg-green-100 text-green-800 text-xs px-2 py-1 rounded-full">4.5</span></td>
+                    <td class="py-3"><span class="bg-green-100 text-green-800 text-xs px-2 py-1 rounded-full font-medium">Ativo</span></td>
+                    <td class="py-3"><button class="text-blue-600 hover:text-blue-800 text-sm">Ver Perfil</button></td>
+                  </tr>
+                  <tr class="hover:bg-gray-50">
+                    <td class="py-3"><div class="flex items-center gap-3"><div class="w-8 h-8 bg-orange-500 rounded-full flex items-center justify-center text-white text-xs font-semibold">AC</div><div><p class="text-sm font-medium">Ana Costa</p><p class="text-xs text-gray-500">ana@empresa.com</p></div></div></td>
+                    <td class="py-3 text-sm">Analista Sr.</td>
+                    <td class="py-3 text-sm">Marketing</td>
+                    <td class="py-3 text-sm text-gray-500">10/01/2021</td>
+                    <td class="py-3"><span class="bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded-full">4.3</span></td>
+                    <td class="py-3"><span class="bg-green-100 text-green-800 text-xs px-2 py-1 rounded-full font-medium">Ativo</span></td>
+                    <td class="py-3"><button class="text-blue-600 hover:text-blue-800 text-sm">Ver Perfil</button></td>
+                  </tr>
+                  <tr class="hover:bg-gray-50">
+                    <td class="py-3"><div class="flex items-center gap-3"><div class="w-8 h-8 bg-teal-500 rounded-full flex items-center justify-center text-white text-xs font-semibold">RL</div><div><p class="text-sm font-medium">Rafael Lima</p><p class="text-xs text-gray-500">rafael@empresa.com</p></div></div></td>
+                    <td class="py-3 text-sm">Desenvolvedor</td>
+                    <td class="py-3 text-sm">Engenharia</td>
+                    <td class="py-3 text-sm text-gray-500">22/06/2022</td>
+                    <td class="py-3"><span class="bg-yellow-100 text-yellow-800 text-xs px-2 py-1 rounded-full">3.7</span></td>
+                    <td class="py-3"><span class="bg-yellow-100 text-yellow-800 text-xs px-2 py-1 rounded-full font-medium">Em atenção</span></td>
+                    <td class="py-3"><button class="text-blue-600 hover:text-blue-800 text-sm">Ver Perfil</button></td>
+                  </tr>
+                  <tr class="hover:bg-gray-50">
+                    <td class="py-3"><div class="flex items-center gap-3"><div class="w-8 h-8 bg-pink-500 rounded-full flex items-center justify-center text-white text-xs font-semibold">CF</div><div><p class="text-sm font-medium">Camila Ferreira</p><p class="text-xs text-gray-500">camila@empresa.com</p></div></div></td>
+                    <td class="py-3 text-sm">Coordenadora</td>
+                    <td class="py-3 text-sm">RH</td>
+                    <td class="py-3 text-sm text-gray-500">05/04/2018</td>
+                    <td class="py-3"><span class="bg-green-100 text-green-800 text-xs px-2 py-1 rounded-full">4.6</span></td>
+                    <td class="py-3"><span class="bg-green-100 text-green-800 text-xs px-2 py-1 rounded-full font-medium">Ativo</span></td>
+                    <td class="py-3"><button class="text-blue-600 hover:text-blue-800 text-sm">Ver Perfil</button></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- ===== PERFIL INTELIGENTE ===== -->
+        <div id="page-intelligence" class="page-content hidden">
+          <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <div class="bg-white rounded-xl shadow-sm border p-6">
+              <h3 class="font-semibold text-gray-800 mb-4">Selecionar Colaborador</h3>
+              <input type="text" placeholder="Buscar..." class="w-full px-4 py-2 border border-gray-200 rounded-lg text-sm mb-4 focus:ring-2 focus:ring-blue-500">
+              <div class="space-y-2">
+                <div class="p-3 rounded-lg cursor-pointer bg-blue-50 border-2 border-blue-300" onclick="selectEmployee('MS')">
+                  <div class="flex items-center gap-3">
+                    <div class="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center text-white text-xs font-semibold">MS</div>
+                    <div><p class="text-sm font-medium">Maria Silva</p><p class="text-xs text-gray-500">Tech Lead • Engenharia</p></div>
+                  </div>
+                </div>
+                <div class="p-3 rounded-lg cursor-pointer bg-gray-50 border border-gray-200 hover:border-blue-300">
+                  <div class="flex items-center gap-3">
+                    <div class="w-8 h-8 bg-purple-500 rounded-full flex items-center justify-center text-white text-xs font-semibold">JS</div>
+                    <div><p class="text-sm font-medium">João Santos</p><p class="text-xs text-gray-500">Gerente • Comercial</p></div>
+                  </div>
+                </div>
+                <div class="p-3 rounded-lg cursor-pointer bg-gray-50 border border-gray-200 hover:border-blue-300">
+                  <div class="flex items-center gap-3">
+                    <div class="w-8 h-8 bg-orange-500 rounded-full flex items-center justify-center text-white text-xs font-semibold">AC</div>
+                    <div><p class="text-sm font-medium">Ana Costa</p><p class="text-xs text-gray-500">Analista Sr. • Marketing</p></div>
+                  </div>
+                </div>
+              </div>
+              <button class="mt-4 w-full bg-blue-600 text-white py-2 rounded-lg text-sm font-medium hover:bg-blue-700">🧠 Gerar Perfil IA</button>
+            </div>
+
+            <div class="lg:col-span-2 space-y-5">
+              <!-- Resumo -->
+              <div class="bg-white rounded-xl shadow-sm border p-6">
+                <div class="flex items-center justify-between mb-4">
+                  <h3 class="font-semibold text-gray-800">Resumo Profissional</h3>
+                  <span class="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded-full">Gerado por IA</span>
+                </div>
+                <p class="text-sm text-gray-600 leading-relaxed bg-gray-50 p-4 rounded-lg">Maria Silva é Tech Lead no departamento de Engenharia, com 4 anos de experiência na empresa. Possui 8 competências mapeadas e média de performance de 4.8. Lidera 6 colaboradores diretamente. Demonstrou evolução consistente em todas as avaliações, com destaque em liderança técnica e resolução de problemas complexos.</p>
+              </div>
+
+              <!-- Competências + Potencial -->
+              <div class="grid grid-cols-2 gap-5">
+                <div class="bg-white rounded-xl shadow-sm border p-6">
+                  <h3 class="font-semibold text-gray-800 mb-4">Mapa de Competências</h3>
+                  <div class="space-y-3">
+                    <div>
+                      <div class="flex justify-between text-sm mb-1"><span>React/Next.js</span><span class="font-medium text-blue-600">Expert</span></div>
+                      <div class="w-full bg-gray-200 rounded-full h-2"><div class="bg-blue-600 h-2 rounded-full" style="width:95%"></div></div>
+                    </div>
+                    <div>
+                      <div class="flex justify-between text-sm mb-1"><span>Node.js/NestJS</span><span class="font-medium text-blue-600">Avançado</span></div>
+                      <div class="w-full bg-gray-200 rounded-full h-2"><div class="bg-blue-600 h-2 rounded-full" style="width:85%"></div></div>
+                    </div>
+                    <div>
+                      <div class="flex justify-between text-sm mb-1"><span>PostgreSQL</span><span class="font-medium text-blue-600">Avançado</span></div>
+                      <div class="w-full bg-gray-200 rounded-full h-2"><div class="bg-blue-600 h-2 rounded-full" style="width:80%"></div></div>
+                    </div>
+                    <div>
+                      <div class="flex justify-between text-sm mb-1"><span>Liderança</span><span class="font-medium text-green-600">Expert</span></div>
+                      <div class="w-full bg-gray-200 rounded-full h-2"><div class="bg-green-600 h-2 rounded-full" style="width:92%"></div></div>
+                    </div>
+                    <div>
+                      <div class="flex justify-between text-sm mb-1"><span>Comunicação</span><span class="font-medium text-green-600">Avançado</span></div>
+                      <div class="w-full bg-gray-200 rounded-full h-2"><div class="bg-green-600 h-2 rounded-full" style="width:88%"></div></div>
+                    </div>
+                  </div>
+                </div>
+                <div class="space-y-5">
+                  <div class="bg-gradient-to-br from-green-500 to-emerald-600 rounded-xl shadow-sm p-6 text-white">
+                    <p class="text-sm text-green-100 mb-1">Potencial de Liderança</p>
+                    <p class="text-4xl font-bold">92%</p>
+                    <div class="w-full bg-white/20 rounded-full h-2 mt-3"><div class="bg-white h-2 rounded-full" style="width:92%"></div></div>
+                  </div>
+                  <div class="bg-gradient-to-br from-orange-400 to-red-500 rounded-xl shadow-sm p-6 text-white">
+                    <p class="text-sm text-orange-100 mb-1">Risco de Retenção</p>
+                    <p class="text-4xl font-bold">15%</p>
+                    <div class="w-full bg-white/20 rounded-full h-2 mt-3"><div class="bg-white h-2 rounded-full" style="width:15%"></div></div>
+                    <p class="text-xs text-orange-100 mt-2">Baixo risco</p>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Pontos Fortes / Melhoria -->
+              <div class="grid grid-cols-2 gap-5">
+                <div class="bg-white rounded-xl shadow-sm border p-6">
+                  <h3 class="font-semibold text-gray-800 mb-3">✅ Pontos Fortes</h3>
+                  <ul class="space-y-2">
+                    <li class="flex items-start gap-2 text-sm text-gray-600"><span class="w-2 h-2 bg-green-500 rounded-full mt-1.5 flex-shrink-0"></span>Alta performance consistentemente</li>
+                    <li class="flex items-start gap-2 text-sm text-gray-600"><span class="w-2 h-2 bg-green-500 rounded-full mt-1.5 flex-shrink-0"></span>Experiência comprovada em liderança</li>
+                    <li class="flex items-start gap-2 text-sm text-gray-600"><span class="w-2 h-2 bg-green-500 rounded-full mt-1.5 flex-shrink-0"></span>Perfil técnico diversificado</li>
+                    <li class="flex items-start gap-2 text-sm text-gray-600"><span class="w-2 h-2 bg-green-500 rounded-full mt-1.5 flex-shrink-0"></span>Comprometimento com desenvolvimento</li>
+                  </ul>
+                </div>
+                <div class="bg-white rounded-xl shadow-sm border p-6">
+                  <h3 class="font-semibold text-gray-800 mb-3">⚡ Áreas de Melhoria</h3>
+                  <ul class="space-y-2">
+                    <li class="flex items-start gap-2 text-sm text-gray-600"><span class="w-2 h-2 bg-yellow-500 rounded-full mt-1.5 flex-shrink-0"></span>Aprimorar gestão de conflitos</li>
+                    <li class="flex items-start gap-2 text-sm text-gray-600"><span class="w-2 h-2 bg-yellow-500 rounded-full mt-1.5 flex-shrink-0"></span>Desenvolver visão estratégica de negócio</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ===== ANALYTICS ===== -->
+        <div id="page-analytics" class="page-content hidden">
+          <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <div class="bg-white rounded-xl shadow-sm border p-6">
+              <h3 class="font-semibold text-gray-800 mb-4">Turnover Mensal</h3>
+              <canvas id="turnoverChart" height="150"></canvas>
+            </div>
+            <div class="bg-white rounded-xl shadow-sm border p-6">
+              <h3 class="font-semibold text-gray-800 mb-4">Engajamento por Departamento</h3>
+              <canvas id="engagementChart" height="150"></canvas>
+            </div>
+            <div class="bg-white rounded-xl shadow-sm border p-6">
+              <h3 class="font-semibold text-gray-800 mb-4">Performance por Período</h3>
+              <canvas id="performanceChart" height="150"></canvas>
+            </div>
+            <div class="bg-white rounded-xl shadow-sm border p-6">
+              <h3 class="font-semibold text-gray-800 mb-4">Absenteísmo</h3>
+              <canvas id="absenceChart" height="150"></canvas>
+            </div>
+          </div>
+        </div>
+
+        <!-- ===== ASSISTENTE IA ===== -->
+        <div id="page-ai-assistant" class="page-content hidden">
+          <div class="bg-white rounded-xl shadow-sm border h-[calc(100vh-200px)] flex flex-col">
+            <div class="p-4 border-b flex items-center gap-3">
+              <div class="w-10 h-10 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-xl flex items-center justify-center text-white text-lg">🤖</div>
+              <div>
+                <h3 class="font-semibold text-gray-800">Nexus AI Assistant</h3>
+                <p class="text-xs text-gray-500">Copiloto inteligente para RH • Powered by GPT-4</p>
+              </div>
+              <span class="ml-auto bg-green-100 text-green-800 text-xs px-2 py-1 rounded-full flex items-center gap-1"><span class="w-2 h-2 bg-green-500 rounded-full"></span>Online</span>
+            </div>
+            <div class="flex-1 overflow-y-auto p-6 space-y-4" id="chat-messages">
+              <div class="chat-bubble flex gap-3">
+                <div class="w-8 h-8 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-lg flex items-center justify-center text-white text-xs font-semibold flex-shrink-0">AI</div>
+                <div class="bg-gray-100 rounded-2xl rounded-tl-none p-4 max-w-2xl">
+                  <p class="text-sm text-gray-700">Olá! Sou o assistente IA do Nexus HR AI. Posso ajudar com análises de talentos, relatórios, insights sobre colaboradores e muito mais. Como posso ajudar?</p>
+                </div>
+              </div>
+              <div class="chat-bubble flex gap-3 flex-row-reverse">
+                <div class="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center text-white text-xs font-semibold flex-shrink-0">RA</div>
+                <div class="bg-blue-600 text-white rounded-2xl rounded-tr-none p-4 max-w-2xl">
+                  <p class="text-sm">Quais colaboradores têm potencial para liderança?</p>
+                </div>
+              </div>
+              <div class="chat-bubble flex gap-3">
+                <div class="w-8 h-8 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-lg flex items-center justify-center text-white text-xs font-semibold flex-shrink-0">AI</div>
+                <div class="bg-gray-100 rounded-2xl rounded-tl-none p-4 max-w-2xl">
+                  <p class="text-sm text-gray-700 mb-3">Baseado nas análises de performance, competências e comportamento liderança, identifiquei os seguintes colaboradores com alto potencial:</p>
+                  <div class="space-y-2">
+                    <div class="bg-white p-3 rounded-lg border">
+                      <div class="flex items-center justify-between">
+                        <div class="flex items-center gap-2"><div class="w-7 h-7 bg-blue-500 rounded-full flex items-center justify-center text-white text-xs">MS</div><span class="text-sm font-medium">Maria Silva</span></div>
+                        <span class="text-xs bg-green-100 text-green-800 px-2 py-0.5 rounded-full">92% potencial</span>
+                      </div>
+                      <p class="text-xs text-gray-500 mt-1 ml-9">Liderança técnica excepcional, 4 avaliações consecutivas acima de 4.5</p>
+                    </div>
+                    <div class="bg-white p-3 rounded-lg border">
+                      <div class="flex items-center justify-between">
+                        <div class="flex items-center gap-2"><div class="w-7 h-7 bg-purple-500 rounded-full flex items-center justify-center text-white text-xs">JS</div><span class="text-sm font-medium">João Santos</span></div>
+                        <span class="text-xs bg-green-100 text-green-800 px-2 py-0.5 rounded-full">88% potencial</span>
+                      </div>
+                      <p class="text-xs text-gray-500 mt-1 ml-9">Liderança natural, alta capacidade de influência e gestão de equipes</p>
+                    </div>
+                    <div class="bg-white p-3 rounded-lg border">
+                      <div class="flex items-center justify-between">
+                        <div class="flex items-center gap-2"><div class="w-7 h-7 bg-orange-500 rounded-full flex items-center justify-center text-white text-xs">AC</div><span class="text-sm font-medium">Ana Costa</span></div>
+                        <span class="text-xs bg-yellow-100 text-yellow-800 px-2 py-0.5 rounded-full">78% potencial</span>
+                      </div>
+                      <p class="text-xs text-gray-500 mt-1 ml-9">Próxima líder natural, recomendo programa de mentoria acelerada</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="p-4 border-t">
+              <div class="flex gap-3">
+                <input type="text" id="chat-input" placeholder="Pergunte algo sobre RH, talentos, relatórios..." class="flex-1 px-4 py-3 border border-gray-200 rounded-xl text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent" onkeypress="if(event.key==='Enter')sendChat()">
+                <button onclick="sendChat()" class="bg-blue-600 text-white px-6 py-3 rounded-xl text-sm font-medium hover:bg-blue-700 transition">Enviar</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ===== AGENTES IA ===== -->
+        <div id="page-agents" class="page-content hidden">
+          <div class="mb-6">
+            <h3 class="font-semibold text-gray-800 text-lg">Agentes IA Especializados</h3>
+            <p class="text-sm text-gray-500">Cada agente é um especialista em uma área específica de RH</p>
+          </div>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+            <div class="bg-white rounded-xl shadow-sm border-2 border-purple-200 p-6 card-hover cursor-pointer">
+              <div class="flex items-center gap-4 mb-4">
+                <div class="w-14 h-14 bg-gradient-to-br from-purple-500 to-purple-700 rounded-xl flex items-center justify-center text-white text-2xl">👥</div>
+                <div>
+                  <h4 class="font-semibold text-gray-800">Nexus Recruiter Agent</h4>
+                  <p class="text-sm text-gray-500">Análise de Candidatos</p>
+                </div>
+              </div>
+              <p class="text-sm text-gray-600 mb-4">Analisa candidatos automaticamente, avalia compatibilidade com vagas e fornece scores de match baseados em competências e experiência.</p>
+              <button class="w-full bg-purple-600 text-white py-2 rounded-lg text-sm font-medium hover:bg-purple-700">Executar Agente</button>
+            </div>
+            <div class="bg-white rounded-xl shadow-sm border-2 border-blue-200 p-6 card-hover cursor-pointer">
+              <div class="flex items-center gap-4 mb-4">
+                <div class="w-14 h-14 bg-gradient-to-br from-blue-500 to-blue-700 rounded-xl flex items-center justify-center text-white text-2xl">⭐</div>
+                <div>
+                  <h4 class="font-semibold text-gray-800">Nexus Talent Agent</h4>
+                  <p class="text-sm text-gray-500">Identificação de Talentos</p>
+                </div>
+              </div>
+              <p class="text-sm text-gray-600 mb-4">Identifica colaboradores de alta performance, mapeia riscos de turnover e sugere planos de retenção personalizados.</p>
+              <button class="w-full bg-blue-600 text-white py-2 rounded-lg text-sm font-medium hover:bg-blue-700">Executar Agente</button>
+            </div>
+            <div class="bg-white rounded-xl shadow-sm border-2 border-green-200 p-6 card-hover cursor-pointer">
+              <div class="flex items-center gap-4 mb-4">
+                <div class="w-14 h-14 bg-gradient-to-br from-green-500 to-green-700 rounded-xl flex items-center justify-center text-white text-2xl">📚</div>
+                <div>
+                  <h4 class="font-semibold text-gray-800">Nexus Learning Agent</h4>
+                  <p class="text-sm text-gray-500">Planos de Desenvolvimento</p>
+                </div>
+              </div>
+              <p class="text-sm text-gray-600 mb-4">Cria trilhas de aprendizado personalizadas, recomenda treinamentos e acompanha evolução de competências.</p>
+              <button class="w-full bg-green-600 text-white py-2 rounded-lg text-sm font-medium hover:bg-green-700">Executar Agente</button>
+            </div>
+            <div class="bg-white rounded-xl shadow-sm border-2 border-orange-200 p-6 card-hover cursor-pointer">
+              <div class="flex items-center gap-4 mb-4">
+                <div class="w-14 h-14 bg-gradient-to-br from-orange-500 to-orange-700 rounded-xl flex items-center justify-center text-white text-2xl">👔</div>
+                <div>
+                  <h4 class="font-semibold text-gray-800">Nexus Leadership Agent</h4>
+                  <p class="text-sm text-gray-500">Apoio a Gestores</p>
+                </div>
+              </div>
+              <p class="text-sm text-gray-600 mb-4">Fornece orientações personalizadas para gestores, analisa dinâmica de equipes e sugere ações de melhoria.</p>
+              <button class="w-full bg-orange-600 text-white py-2 rounded-lg text-sm font-medium hover:bg-orange-700">Executar Agente</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- ===== KNOWLEDGE BASE ===== -->
+        <div id="page-knowledge" class="page-content hidden">
+          <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <div class="lg:col-span-2 bg-white rounded-xl shadow-sm border p-6">
+              <h3 class="font-semibold text-gray-800 mb-4">Base de Conhecimento Corporativa</h3>
+              <div class="border-2 border-dashed border-gray-300 rounded-xl p-8 text-center mb-6 hover:border-blue-400 transition cursor-pointer">
+                <span class="text-4xl mb-3 block">📄</span>
+                <p class="text-gray-600 font-medium">Arraste arquivos ou clique para upload</p>
+                <p class="text-sm text-gray-400 mt-1">PDF, DOCX, XLSX • Máx. 10MB</p>
+              </div>
+              <div class="space-y-3">
+                <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                  <div class="flex items-center gap-3"><span class="text-2xl">📋</span><div><p class="text-sm font-medium">Política de Remuneração 2024</p><p class="text-xs text-gray-500">PDF • 2.3 MB • Atualizado há 5 dias</p></div></div>
+                  <button class="text-blue-600 text-sm hover:underline">Perguntar</button>
+                </div>
+                <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                  <div class="flex items-center gap-3"><span class="text-2xl">📋</span><div><p class="text-sm font-medium">Manual do Colaborador</p><p class="text-xs text-gray-500">DOCX • 1.8 MB • Atualizado há 12 dias</p></div></div>
+                  <button class="text-blue-600 text-sm hover:underline">Perguntar</button>
+                </div>
+                <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                  <div class="flex items-center gap-3"><span class="text-2xl">📋</span><div><p class="text-sm font-medium">Código de Ética</p><p class="text-xs text-gray-500">PDF • 890 KB • Atualizado há 30 dias</p></div></div>
+                  <button class="text-blue-600 text-sm hover:underline">Perguntar</button>
+                </div>
+              </div>
+            </div>
+            <div class="bg-white rounded-xl shadow-sm border p-6">
+              <h3 class="font-semibold text-gray-800 mb-4">💬 Perguntar à Base</h3>
+              <div class="bg-blue-50 p-4 rounded-lg mb-4">
+                <p class="text-sm text-blue-800">🤖 A IA responde usando apenas documentos da empresa (RAG)</p>
+              </div>
+              <textarea class="w-full px-4 py-3 border border-gray-200 rounded-lg text-sm h-32 resize-none focus:ring-2 focus:ring-blue-500" placeholder="Ex: Qual é a política de home office?"></textarea>
+              <button class="mt-3 w-full bg-blue-600 text-white py-2 rounded-lg text-sm font-medium hover:bg-blue-700">Perguntar à IA</button>
+              <div class="mt-4 p-4 bg-gray-50 rounded-lg">
+                <p class="text-xs text-gray-500 mb-2">Última pergunta:</p>
+                <p class="text-sm font-medium mb-2">"Qual o limite de dias de férias?"</p>
+                <p class="text-sm text-gray-600">Baseado no Manual do Colaborador (p. 42): O colaborador tem direito a 30 dias corridos de férias por ano, podendo dividir em até 3 períodos...</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ===== RELATÓRIOS ===== -->
+        <div id="page-reports" class="page-content hidden">
+          <div class="bg-white rounded-xl shadow-sm border p-6">
+            <div class="flex items-center justify-between mb-6">
+              <div>
+                <h3 class="font-semibold text-gray-800">Relatórios Automáticos</h3>
+                <p class="text-sm text-gray-500">Gere relatórios inteligentes com IA</p>
+              </div>
+              <button class="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-blue-700">+ Novo Relatório</button>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+              <div class="border border-gray-200 rounded-xl p-5 hover:border-blue-300 hover:shadow-md transition cursor-pointer">
+                <div class="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center text-2xl mb-3">📊</div>
+                <h4 class="font-medium text-gray-800 mb-1">Relatório Executivo</h4>
+                <p class="text-xs text-gray-500 mb-3">Visão geral de RH para liderança</p>
+                <button class="w-full bg-blue-600 text-white py-1.5 rounded-lg text-xs font-medium hover:bg-blue-700">Gerar com IA</button>
+              </div>
+              <div class="border border-gray-200 rounded-xl p-5 hover:border-green-300 hover:shadow-md transition cursor-pointer">
+                <div class="w-12 h-12 bg-green-100 rounded-xl flex items-center justify-center text-2xl mb-3">⭐</div>
+                <h4 class="font-medium text-gray-800 mb-1">Relatório de Talentos</h4>
+                <p class="text-xs text-gray-500 mb-3">Análise de alta performance</p>
+                <button class="w-full bg-green-600 text-white py-1.5 rounded-lg text-xs font-medium hover:bg-green-700">Gerar com IA</button>
+              </div>
+              <div class="border border-gray-200 rounded-xl p-5 hover:border-orange-300 hover:shadow-md transition cursor-pointer">
+                <div class="w-12 h-12 bg-orange-100 rounded-xl flex items-center justify-center text-2xl mb-3">🌡️</div>
+                <h4 class="font-medium text-gray-800 mb-1">Clima Organizacional</h4>
+                <p class="text-xs text-gray-500 mb-3">Pesquisa de engajamento</p>
+                <button class="w-full bg-orange-600 text-white py-1.5 rounded-lg text-xs font-medium hover:bg-orange-700">Gerar com IA</button>
+              </div>
+              <div class="border border-gray-200 rounded-xl p-5 hover:border-purple-300 hover:shadow-md transition cursor-pointer">
+                <div class="w-12 h-12 bg-purple-100 rounded-xl flex items-center justify-center text-2xl mb-3">📈</div>
+                <h4 class="font-medium text-gray-800 mb-1">Desempenho</h4>
+                <p class="text-xs text-gray-500 mb-3">Evolução de performance</p>
+                <button class="w-full bg-purple-600 text-white py-1.5 rounded-lg text-xs font-medium hover:bg-purple-700">Gerar com IA</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ===== CLIMA ===== -->
+        <div id="page-climate" class="page-content hidden">
+          <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <div class="bg-white rounded-xl shadow-sm border p-6">
+              <h3 class="font-semibold text-gray-800 mb-4">Pesquisa de Clima</h3>
+              <div class="bg-gradient-to-r from-green-400 to-blue-500 rounded-xl p-6 text-white text-center">
+                <p class="text-sm text-white/80 mb-1">Score de Clima Organizacional</p>
+                <p class="text-5xl font-bold">82</p>
+                <p class="text-sm text-white/80 mt-1">Bom • Top 25% do mercado</p>
+              </div>
+            </div>
+            <div class="bg-white rounded-xl shadow-sm border p-6">
+              <h3 class="font-semibold text-gray-800 mb-4">Respostas por Área</h3>
+              <canvas id="climateChart" height="150"></canvas>
+            </div>
+          </div>
+        </div>
+
+        <!-- ===== TALENTOS ===== -->
+        <div id="page-talent" class="page-content hidden">
+          <div class="bg-white rounded-xl shadow-sm border p-6">
+            <div class="flex items-center justify-between mb-6">
+              <h3 class="font-semibold text-gray-800">Pipeline de Talentos</h3>
+              <button class="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-blue-700">+ Nova Vaga</button>
+            </div>
+            <div class="grid grid-cols-5 gap-4">
+              <div class="bg-gray-50 rounded-xl p-4">
+                <h4 class="text-xs font-semibold text-gray-500 uppercase mb-3">Aplicados (12)</h4>
+                <div class="space-y-2">
+                  <div class="bg-white p-3 rounded-lg border shadow-sm"><p class="text-sm font-medium">Pedro Almeida</p><p class="text-xs text-gray-500">Dev Full Stack</p></div>
+                  <div class="bg-white p-3 rounded-lg border shadow-sm"><p class="text-sm font-medium">Lucia Santos</p><p class="text-xs text-gray-500">Designer UI</p></div>
+                </div>
+              </div>
+              <div class="bg-gray-50 rounded-xl p-4">
+                <h4 class="text-xs font-semibold text-gray-500 uppercase mb-3">Triagem (8)</h4>
+                <div class="space-y-2">
+                  <div class="bg-white p-3 rounded-lg border shadow-sm"><p class="text-sm font-medium">Carlos Mendes</p><p class="text-xs text-gray-500">Product Owner</p></div>
+                </div>
+              </div>
+              <div class="bg-gray-50 rounded-xl p-4">
+                <h4 class="text-xs font-semibold text-gray-500 uppercase mb-3">Entrevista (5)</h4>
+                <div class="space-y-2">
+                  <div class="bg-white p-3 rounded-lg border shadow-sm"><p class="text-sm font-medium">Fernanda Lima</p><p class="text-xs text-gray-500">Scrum Master</p></div>
+                </div>
+              </div>
+              <div class="bg-gray-50 rounded-xl p-4">
+                <h4 class="text-xs font-semibold text-gray-500 uppercase mb-3">Proposta (2)</h4>
+                <div class="space-y-2">
+                  <div class="bg-white p-3 rounded-lg border shadow-sm"><p class="text-sm font-medium">Roberto Dias</p><p class="text-xs text-gray-500">Tech Lead</p></div>
+                </div>
+              </div>
+              <div class="bg-gray-50 rounded-xl p-4">
+                <h4 class="text-xs font-semibold text-gray-500 uppercase mb-3">Contratado (1)</h4>
+                <div class="space-y-2">
+                  <div class="bg-white p-3 rounded-lg border border-green-300 shadow-sm"><p class="text-sm font-medium text-green-700">Amanda Rocha</p><p class="text-xs text-green-600">QA Engineer ✓</p></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ===== CONFIGURAÇÕES ===== -->
+        <div id="page-settings" class="page-content hidden">
+          <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <div class="lg:col-span-3">
+              <h3 class="font-semibold text-gray-800 text-lg mb-4">Planos & Assinatura</h3>
+              <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="bg-white rounded-xl shadow-sm border-2 border-gray-200 p-6">
+                  <h4 class="font-bold text-lg mb-2">STARTER</h4>
+                  <p class="text-3xl font-bold mb-1">R$ 197<span class="text-sm font-normal text-gray-500">/mês</span></p>
+                  <p class="text-sm text-gray-500 mb-4">Até 5 usuários • 50 colaboradores</p>
+                  <ul class="text-sm space-y-2 mb-6">
+                    <li class="flex items-center gap-2"><span class="text-green-500">✓</span> Gestão de Colaboradores</li>
+                    <li class="flex items-center gap-2"><span class="text-green-500">✓</span> Analytics Básico</li>
+                    <li class="flex items-center gap-2"><span class="text-green-500">✓</span> Relatórios</li>
+                    <li class="flex items-center gap-2 text-gray-400"><span>✗</span> Assistente IA</li>
+                  </ul>
+                  <button class="w-full border-2 border-gray-300 py-2 rounded-lg text-sm font-medium hover:bg-gray-50">Plano Atual</button>
+                </div>
+                <div class="bg-white rounded-xl shadow-sm border-2 border-blue-500 p-6 relative">
+                  <span class="absolute -top-3 left-1/2 -translate-x-1/2 bg-blue-600 text-white text-xs px-3 py-1 rounded-full font-medium">Mais Popular</span>
+                  <h4 class="font-bold text-lg mb-2 text-blue-600">PROFESSIONAL</h4>
+                  <p class="text-3xl font-bold mb-1">R$ 497<span class="text-sm font-normal text-gray-500">/mês</span></p>
+                  <p class="text-sm text-gray-500 mb-4">Até 25 usuários • 500 colaboradores</p>
+                  <ul class="text-sm space-y-2 mb-6">
+                    <li class="flex items-center gap-2"><span class="text-green-500">✓</span> Tudo do Starter</li>
+                    <li class="flex items-center gap-2"><span class="text-green-500">✓</span> Assistente IA</li>
+                    <li class="flex items-center gap-2"><span class="text-green-500">✓</span> Base de Conhecimento</li>
+                    <li class="flex items-center gap-2"><span class="text-green-500">✓</span> Analytics Avançado</li>
+                  </ul>
+                  <button class="w-full bg-blue-600 text-white py-2 rounded-lg text-sm font-medium hover:bg-blue-700">Fazer Upgrade</button>
+                </div>
+                <div class="bg-white rounded-xl shadow-sm border-2 border-gray-200 p-6">
+                  <h4 class="font-bold text-lg mb-2">ENTERPRISE</h4>
+                  <p class="text-3xl font-bold mb-1">R$ 997<span class="text-sm font-normal text-gray-500">/mês</span></p>
+                  <p class="text-sm text-gray-500 mb-4">Ilimitado</p>
+                  <ul class="text-sm space-y-2 mb-6">
+                    <li class="flex items-center gap-2"><span class="text-green-500">✓</span> Tudo do Professional</li>
+                    <li class="flex items-center gap-2"><span class="text-green-500">✓</span> Agentes IA (4)</li>
+                    <li class="flex items-center gap-2"><span class="text-green-500">✓</span> Relatórios Customizados</li>
+                    <li class="flex items-center gap-2"><span class="text-green-500">✓</span> Acesso API</li>
+                  </ul>
+                  <button class="w-full border-2 border-gray-300 py-2 rounded-lg text-sm font-medium hover:bg-gray-50">Fazer Upgrade</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </main>
+    </div>
+  </div>
+
+  <script>
+    // Page navigation
+    function showPage(page) {
+      document.querySelectorAll('.page-content').forEach(p => p.classList.add('hidden'));
+      document.querySelectorAll('.sidebar-item').forEach(i => i.classList.remove('active'));
+      
+      const target = document.getElementById('page-' + page);
+      if (target) target.classList.remove('hidden');
+      
+      const btn = document.querySelector(`[data-page="${page}"]`);
+      if (btn) btn.classList.add('active');
+
+      const titles = {
+        'dashboard': ['Dashboard Executivo', 'Visão geral de People Analytics'],
+        'employees': ['Colaboradores', 'Gestão de talentos e dados'],
+        'intelligence': ['Perfil Inteligente', 'Análise IA de cada colaborador'],
+        'analytics': ['People Analytics', 'Métricas e tendências de RH'],
+        'ai-assistant': ['Assistente IA', 'Chatbot inteligente para RH'],
+        'agents': ['Agentes IA', 'Agentes especializados em áreas de RH'],
+        'knowledge': ['Knowledge Base', 'Base de conhecimento corporativa com RAG'],
+        'reports': ['Relatórios', 'Geração automática com IA'],
+        'climate': ['Clima Organizacional', 'Pesquisas e engajamento'],
+        'talent': ['Gestão de Talentos', 'Pipeline de recrutamento'],
+        'settings': ['Configurações', 'Planos e assinatura SaaS']
+      };
+
+      document.getElementById('page-title').textContent = titles[page]?.[0] || page;
+      document.getElementById('page-subtitle').textContent = titles[page]?.[1] || '';
+    }
+
+    // Chat simulation
+    function sendChat() {
+      const input = document.getElementById('chat-input');
+      const msg = input.value.trim();
+      if (!msg) return;
+
+      const container = document.getElementById('chat-messages');
+      
+      const userBubble = document.createElement('div');
+      userBubble.className = 'chat-bubble flex gap-3 flex-row-reverse';
+      userBubble.innerHTML = `<div class="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center text-white text-xs font-semibold flex-shrink-0">RA</div><div class="bg-blue-600 text-white rounded-2xl rounded-tr-none p-4 max-w-2xl"><p class="text-sm">${msg}</p></div>`;
+      container.appendChild(userBubble);
+
+      input.value = '';
+      container.scrollTop = container.scrollHeight;
+
+      setTimeout(() => {
+        const aiBubble = document.createElement('div');
+        aiBubble.className = 'chat-bubble flex gap-3';
+        aiBubble.innerHTML = `<div class="w-8 h-8 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-lg flex items-center justify-center text-white text-xs font-semibold flex-shrink-0">AI</div><div class="bg-gray-100 rounded-2xl rounded-tl-none p-4 max-w-2xl"><p class="text-sm text-gray-700">Analisei seus dados de RH com base na pergunta "${msg}". Com base nas informações internas da empresa, posso afirmar que há 3 colaboradores com perfil compatível e 2 áreas que precisam de atenção imediata. Posso gerar um relatório detalhado?</p></div>`;
+        container.appendChild(aiBubble);
+        container.scrollTop = container.scrollHeight;
+      }, 1500);
+    }
+
+    // Charts
+    document.addEventListener('DOMContentLoaded', () => {
+      // Headcount Chart
+      new Chart(document.getElementById('headcountChart'), {
+        type: 'line',
+        data: {
+          labels: ['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'],
+          datasets: [{
+            label: 'Headcount',
+            data: [210,215,218,222,225,228,232,235,240,243,245,247],
+            borderColor: '#3b82f6',
+            backgroundColor: 'rgba(59,130,246,0.1)',
+            fill: true,
+            tension: 0.4,
+            pointRadius: 4,
+            pointBackgroundColor: '#3b82f6'
+          }]
+        },
+        options: { responsive: true, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: false } } }
+      });
+
+      // Department Chart
+      new Chart(document.getElementById('deptChart'), {
+        type: 'doughnut',
+        data: {
+          labels: ['Engenharia','Comercial','Marketing','RH','Financeiro','Operações'],
+          datasets: [{ data: [85,52,38,22,28,22], backgroundColor: ['#3b82f6','#8b5cf6','#f59e0b','#10b981','#ef4444','#6366f1'] }]
+        },
+        options: { responsive: true, plugins: { legend: { position: 'bottom', labels: { boxWidth: 12, padding: 10, font: { size: 11 } } } } }
+      });
+
+      // Analytics charts
+      setTimeout(() => {
+        const turnoverEl = document.getElementById('turnoverChart');
+        if (turnoverEl) {
+          new Chart(turnoverEl, {
+            type: 'bar',
+            data: { labels: ['Jan','Fev','Mar','Abr','Mai','Jun'], datasets: [{ label: 'Turnover %', data: [9.2,8.8,10.1,8.5,7.9,8.3], backgroundColor: '#ef4444' }] },
+            options: { responsive: true, plugins: { legend: { display: false } } }
+          });
+        }
+        const engagementEl = document.getElementById('engagementChart');
+        if (engagementEl) {
+          new Chart(engagementEl, {
+            type: 'bar',
+            data: { labels: ['Eng.','Com.','Mkt.','RH','Fin.'], datasets: [{ label: 'Engajamento %', data: [85,78,82,90,80], backgroundColor: ['#3b82f6','#8b5cf6','#f59e0b','#10b981','#ef4444'] }] },
+            options: { responsive: true, plugins: { legend: { display: false } } }
+          });
+        }
+        const perfEl = document.getElementById('performanceChart');
+        if (perfEl) {
+          new Chart(perfEl, {
+            type: 'line',
+            data: { labels: ['Q1','Q2','Q3','Q4'], datasets: [{ label: 'Performance', data: [3.8,4.0,4.1,4.2], borderColor: '#8b5cf6', tension: 0.4, pointRadius: 5, pointBackgroundColor: '#8b5cf6' }] },
+            options: { responsive: true, plugins: { legend: { display: false } } }
+          });
+        }
+        const absEl = document.getElementById('absenceChart');
+        if (absEl) {
+          new Chart(absEl, {
+            type: 'line',
+            data: { labels: ['Jan','Fev','Mar','Abr','Mai','Jun'], datasets: [{ label: 'Absenteísmo %', data: [4.2,3.8,4.5,3.2,3.5,3.1], borderColor: '#f59e0b', backgroundColor: 'rgba(245,158,11,0.1)', fill: true, tension: 0.4 }] },
+            options: { responsive: true, plugins: { legend: { display: false } } }
+          });
+        }
+        const climateEl = document.getElementById('climateChart');
+        if (climateEl) {
+          new Chart(climateEl, {
+            type: 'bar',
+            data: { labels: ['Eng.','Com.','Mkt.','RH','Fin.'], datasets: [{ label: 'Score Clima', data: [85,78,82,92,80], backgroundColor: ['#10b981','#f59e0b','#3b82f6','#10b981','#ef4444'] }] },
+            options: { responsive: true, plugins: { legend: { display: false } } }
+          });
+        }
+      }, 100);
+    });
+  </script>
+</body>
+</html>
